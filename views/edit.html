@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <title>修改学生 - 学生信息管理系统</title>
+        <link href="../libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body{
+                padding-top: 50px;
+            }
+            header{
+                background-color: #eee;
+                height: 6rem;
+            }
+            header h1{
+                font-size: 2.2rem;
+            }
+            .form-horizontal{
+                margin-top: 15px;
+            }
+            .form-horizontal .control-label{
+                text-align: left;
+            }
+        </style>
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a href="#" class="navbar-brand">学生信息管理系统</a>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="#">首页</a></li>
+                        <li class="active"><a href="#">学生管理</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <header>
+            <div class="container">
+                <h1>修改学生信息</h1>
+            </div>
+        </header>
+        
+        <div class="container">
+            <form class="form-horizontal" action="/api/student/edit/{{student.id}}" method="POST">
+                <div class="form-group">
+                    <label for="name" class="col-sm-2 control-label">姓名：</label>
+                    <div class="col-sm-2">
+                        <input type="text" name="name" id="name" class="form-control"
+                            placeholder="请填写学生姓名" required
+                            pattern="^[\u4e00-\u9fa5]{2,4}$" value="{{student.name}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="male" class="col-sm-2 control-label">性别：</label>
+                    <div class="col-sm-3">
+                        <label class="radio-inline">
+                            <input type="radio" name="isMale" id="male" value="true"  {{student.isMale ? 'checked' : ''}}> 男
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="isMale" id="female" value="false" {{student.isMale ? '' : 'checked'}}> 女
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="age" class="col-sm-2 control-label">年龄：</label>
+                    <div class="col-sm-1">
+                        <select class="form-control" id="age" name="age">
+                            <option value="18" {{student.age==18 ? 'selected': ''}}>18</option>
+                            <option value="19" {{student.age==19 ? 'selected': ''}}>19</option>
+                            <option value="20" {{student.age==20 ? 'selected': ''}}>20</option>
+                            <option value="21" {{student.age==21 ? 'selected': ''}}>21</option>
+                            <option value="22" {{student.age==22 ? 'selected': ''}}>22</option>
+                            <option value="23" {{student.age==23 ? 'selected': ''}}>23</option>
+                            <option value="24" {{student.age==24 ? 'selected': ''}}>24</option>
+                            <option value="25" {{student.age==25 ? 'selected': ''}}>25</option>
+                            <option value="26" {{student.age==26 ? 'selected': ''}}>26</option>
+                            <option value="27" {{student.age==27 ? 'selected': ''}}>27</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="phone" class="col-sm-2 control-label">手机号：</label>
+                    <div class="col-sm-2">
+                        <input class="form-control" type="tel" id="phone" name="phone" placeholder="请填写手机号"
+                            required pattern="^[1][3-8]\d{9}$" value="{{student.phone}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="col-sm-2 control-label">电子邮箱：</label>
+                    <div class="col-sm-3">
+                        <input class="form-control" type="email" id="email" name="email" placeholder="请输入电子邮箱地址"
+                            required value="{{student.email}}">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description" class="col-sm-2 control-label">备注：</label>
+                    <div class="col-sm-7">
+                        <textarea class="form-control" id="description" name="description" rows="7"
+                            placeholder="请填写学生其它信息">{{student.description}}</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-sm-2 control-label"></label>
+                    <div class="col-sm-2">
+                        <input type="submit" class="btn btn-primary btn-block" value="提交"></input>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <script src="../libs/jquery.js"></script>
+        <script src="../libs/bootstrap/js/bootstrap.js"></script>
+        <script src="../scripts/add.js"></script>
+    </body>
+</html>

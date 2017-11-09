@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>学生管理系统 - 首页</title>
+    <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 50px;
+        }
+
+        header {
+            background-color: #eee;
+            height: 6rem;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+        }
+
+        .toolbar {
+            padding: 10px 15px;
+        }
+
+        th {
+            background-color: #eee;
+            font-weight: normal;
+        }
+
+        #myModal .control-label {
+            text-align: left;
+        }
+
+        .glyphicon {
+            cursor: pointer;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                <a href="#" class="navbar-brand">学生信息管理系统</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#">首页</a></li>
+                    <li class="active"><a href="#">学生管理</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <header>
+        <div class="container">
+            <h1>学生查询及管理</h1>
+        </div>
+    </header>
+    <div class="container toolbar">
+        <button class="btn btn-success" onclick="location.href='/add'">添加学生</button>
+        <button class="btn btn-warning" data-toggle="modal" data-target="#searchModal">
+                <span class="glyphicon glyphicon-search"></span> 搜索
+            </button>
+    </div>
+    <!-- 放渲染后的模板数据 -->
+    <div class="container data"></div>
+    <script id="table-template" type="text/html">
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <tr>
+                    <th>姓名</th>
+                    <th class="text-center">性别</th>
+                    <th class="text-center">年龄</th>
+                    <th class="text-center">手机号</th>
+                    <th>电子邮箱</th>
+                    <th class="text-center">修改</th>
+                    <th class="text-center">删除</th>
+                </tr>
+                {{each students student}}
+                <tr>
+                    <td>{{student.name}}</td>
+                    <td class="text-center">{{student.isMale ? '男': '女'}}</td>
+                    <td class="text-center">{{student.age}}</td>
+                    <td class="text-center">{{student.phone}}</td>
+                    <td>{{student.email}}</td>
+                    <td class="text-center">
+                        <span class="glyphicon glyphicon-edit" onclick="location.href='/edit/{{student._id}}'"></span>
+                    </td>
+                    <td class="text-center">
+                        <span class="glyphicon glyphicon-trash" onclick="removeStudent('{{student._id}}', '{{student.name}}')"></span>
+                    </td>
+                </tr>
+                {{/each}}
+            </table>
+        </div>
+        <!-- 分页 -->
+        <nav>
+            <ul class="pagination">
+                <li class="{{page <= 1 ? 'disabled' : ''}}">
+                    <a onclick="showPage({{page - 1}}, {{pageCount}})">上一页</a>
+                </li>
+                {{each pages p}}
+                <li class="{{page == p ? 'active' : ''}}">
+                    <a onclick="showPage({{p}}, {{pageCount}})">{{p}}</a>
+                </li>
+                {{/each}}
+                <li class="{{page >= pageCount ? 'disabled' : ''}}">
+                    <a onclick="showPage({{page + 1}}, {{pageCount}})">下一页</a>
+                </li>
+            </ul>
+        </nav>
+    </script>
+    <!-- 删除确认模态框 -->
+    <div class="modal fade" id="removeModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">确认要删除吗？</h4>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger">&#x3000;确定&#x3000;</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">&#x3000;取消&#x3000;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 搜索模态框 -->
+    <div class="modal fade" id="searchModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                <h4 class="modal-title">学生信息搜索</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label for="name" class="col-sm-3 control-label">姓名：</label>
+                        <div class="col-sm-4">
+                            <input type="text" id="name" name="name" class="form-control" placeholder="学生姓名">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="none" class="col-sm-3 control-label">性别：</label>
+                        <div class="col-sm-4">
+                            <label class="radio-inline">
+                                <input type="radio" name="isMale" id="none" value="" checked> 不限
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="isMale" id="male" value="true"> 男
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="isMale" id="female" value="false"> 女
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="col-sm-3 control-label">手机：</label>
+                        <div class="col-sm-4">
+                            <input type="text" id="phone" name="phone" class="form-control" placeholder="手机号">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">&#x3000;关闭&#x3000;</button>
+                <button onclick="showPage(1,1)" type="button" class="btn btn-success" data-dismiss="modal">&#x3000;搜索&#x3000;</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <script src="libs/jquery.js"></script>
+    <script src="libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="libs/template-web.js"></script>
+    <script src="scripts/index.js"></script>
+</body>
+
+</html>
